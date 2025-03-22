@@ -1,26 +1,39 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Ql3zNhp1)
 [![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=18683862)
 
-# Sistema Web de Seguimiento Personalizado para la Mejora de Atención de Clientes en Focusgym Utilizando Inteligencia Artificial.
+# Convertidor Automático de Markdown a Video Interactivo - Markdown2Video
 
-## Problematica
-El gimnasio FocusGym enfrenta una baja retención de clientes, lo que impacta negativamente tanto en su operatividad como en la experiencia de los usuarios. Esta problemática se origina a partir de cuatro deficiencias principales identificadas en las áreas clave del servicio.
-Una de las deficiencias significativas es el control ineficiente de asistencias, lo que se debe al registro manual de clientes y asistencia al gimnasio. Esto dificulta el seguimiento adecuado y la gestión eficiente de la afluencia de usuarios.
-La deficiencia en el envío de información a los clientes se presenta como otro desafío crítico, y esto se debe al envío de notificaciones no automatizado, registro de citas en cuadernos y documentación manual de sesiones de entrenamiento. Esta situación complica la comunicación efectiva y el seguimiento oportuno con los usuarios.
-El inadecuado seguimiento mensual o semanal del progreso del cliente es otra problemática significativa, y esto se debe al registro de rutinas de los clientes realizado manualmente en cuadernos, lo que restringe la capacidad de monitorear efectivamente los avances y ajustar los programas según las necesidades individuales.
+## 1. Problemática  
+En la actualidad, la creación de contenido audiovisual, especialmente en forma de videos educativos, promocionales o de divulgación, representa un desafío significativo para muchas personas y organizaciones. La producción de videos de calidad requiere conocimientos en edición, herramientas especializadas y tiempo considerable para desarrollar contenido atractivo.  
 
-## Objetivo general
-Desarrollar un Sistema Web de Seguimiento del plan integral de
-entrenamiento de usuarios del gimnasio Focusgym Utilizando Inteligencia
-Artificial
+Las herramientas tradicionales de edición de video, como **Adobe Premiere, Final Cut Pro o DaVinci Resolve**, ofrecen un alto grado de personalización, pero requieren una curva de aprendizaje elevada y demanda de recursos computacionales considerables. Esto limita su accesibilidad a personas que no tienen experiencia en edición de video o que necesitan generar contenido de forma rápida y eficiente sin dedicar largas horas a la edición manual.  
 
-## Objetivos Específicos
-- Desarrollar un módulo de seguimiento y progreso para cada usuario
-- Desarrollar un módulo de gestión de rutinas con IA
-- Desarrollar un módulo de gestión de asistencias
-- Desarrollar un módulo de gestión de citas
-- Desarrollar un módulo de comunicaciones
+Por otro lado, **Markdown** se ha convertido en un estándar ampliamente utilizado para la escritura estructurada de contenido en múltiples ámbitos, como documentación técnica, blogs y presentaciones. Sin embargo, actualmente no existe una solución accesible y automatizada que permita convertir estos documentos en videos interactivos sin necesidad de intervención manual.  
 
-## Justificación
-El proyecto busca solucionar los problemas de baja retención de clientes en FocusGym a través de un sistema web que permite el seguimiento personalizado del progreso de los usuarios mediante el uso de inteligencia artificial. La falta de automatización en la gestión de asistencia y recomendaciones de entrenamiento afecta la operatividad del gimnasio. El sistema proporcionará mejoras en la eficiencia operativa, reducirá la carga manual sobre el personal y aumentará la satisfacción y fidelización de los clientes al ofrecer una experiencia más personalizada y precisa.
+Este vacío en el mercado crea una barrera para creadores de contenido, docentes, empresas y profesionales que buscan transformar documentos en videos sin enfrentarse a procesos complicados de edición. En muchos casos, estas personas terminan utilizando herramientas de presentación como **PowerPoint o Google Slides con grabaciones de pantalla**, lo que puede ser un proceso tedioso y con limitaciones en cuanto a personalización y calidad.  
+
+---
+
+## 2. Objetivo General  
+Desarrollar un sistema automatizado denominado **Markdown2Video**, capaz de convertir presentaciones escritas en formato **Markdown con Marp** en videos interactivos de manera eficiente y sin intervención manual, optimizando la generación de contenido audiovisual para diversas aplicaciones, como educación, divulgación, marketing y documentación técnica.  
+
+---
+
+## 3. Objetivos Específicos  
+1. **Implementar un editor con soporte para Marp** que permita a los usuarios escribir sus presentaciones en Markdown con previsualización en tiempo real.  
+2. **Desarrollar un módulo de conversión automática** que transforme las presentaciones en videos con transiciones predefinidas.  
+3. **Optimizar el rendimiento del sistema** mediante el uso de herramientas como **FFmpeg** para la renderización eficiente de videos en formatos compatibles (MP4, WebM, AVI).  
+4. **Permitir la personalización de estilos y duración de diapositivas**, ofreciendo opciones para cambiar, velocidad de presentación y efectos visuales.  
+5. **Evaluar la usabilidad y accesibilidad del sistema** a través de pruebas con usuarios finales, validando su facilidad de uso y efectividad en la generación de contenido audiovisual.  
+
+---
+
+## 4. Justificación  
+La transformación digital ha incrementado la demanda de contenido audiovisual accesible y de rápida producción. En este contexto, el desarrollo de **Markdown2Video** responde a la necesidad de **automatizar la generación de videos a partir de presentaciones Markdown**, permitiendo a usuarios sin conocimientos en edición de video convertir su contenido en material visual interactivo sin esfuerzo adicional.
+### Beneficios clave:  
+✅ **Automatización del proceso**: Reduce el tiempo y esfuerzo necesario para convertir presentaciones en videos.  
+✅ **Accesibilidad**: Permite a cualquier usuario, sin conocimientos de edición, generar contenido visual.  
+✅ **Eficiencia y optimización**: Usa tecnologías como **FFmpeg** para una conversión rápida y eficiente.  
+✅ **Aplicación en múltiples sectores**: Educación, marketing digital, documentación técnica y divulgación de información.  
+✅ **Innovación**: No existe actualmente una herramienta que realice esta conversión de forma completamente automatizada.  
 
