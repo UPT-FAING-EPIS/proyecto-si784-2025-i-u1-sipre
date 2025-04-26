@@ -1,0 +1,76 @@
+name: Release Version
+
+env:
+  PHP_VERSION: 8.1
+  COMPOSER_VERSION: 2.1
+
+on:
+  push:
+    branches:
+      - main  # Puedes configurar para que solo se ejecute al hacer push a la rama principal (o la que prefieras)
+
+jobs:
+  release:
+    name: Build and Release Package
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ env.PHP_VERSION }}
+        extensions: mbstring, xml, curl  # Agregar las extensiones necesarias para tu proyecto
+
+    - name: Install Composer
+      run: |
+        curl -sS https://getcomposer.org/installer | php
+        sudo mv composer.phar /usr/local/bin/composer
+
+    - name: Install Dependencies
+      run: composer install --no-dev --optimize-autoloader
+
+    - name: Run PHP Tests (si usas PHPUnit u otro framework de pruebas)
+      run: |
+        vendor/bin/phpunit --configuration phpunit.xml
+
+    - name: Build Project (si necesitas compilar o procesar algún archivo, puedes agregar esta parte)
+      run: |
+        # Aquí puedes agregar los comandos necesarios para compilar tu proyecto PHP si es necesario
+        echo "Building PHP project..."
+
+    - name: Create Release Package
+      run: |
+        mkdir release
+        zip -r release/project-${GITHUB_SHA}.zip .  # O el tipo de archivo que prefieras como release
+
+    - name: Create Git tag
+      run: |
+        VERSION=$(grep -oP '(?<=<version>)(.*?)(?=</version>)' composer.json)
+        echo "Current Version: $VERSION"
+
+        TAG="v${VERSION}"
+
+        # Verifica si el tag ya existe en el remoto
+        while git ls-remote --tags origin "$TAG" | grep -q "$TAG"; do
+          echo "Tag $TAG already exists. Incrementing version."
+          # Si el tag existe, incrementa la versión
+          VERSION_INCREMENTED=$(echo $VERSION | awk -F. -v OFS=. '{$NF++;print}')
+          TAG="v${VERSION_INCREMENTED}"
+          VERSION=$VERSION_INCREMENTED  # Actualiza la versión para seguir incrementando 
+          echo "New version with increment: $TAG"
+        done
+        echo "NAME=$TAG" >> $GITHUB_ENV
+        # Crear el nuevo tag
+        git tag $TAG
+        git push origin $TAG
+
+    - name: Publish Release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ env.NAME }}
+        name: "Release ${{ env.NAME }}"
+        files: release/*.zip  # O el tipo de archivo que hayas creado
+        token: ${{ secrets.GH_TOKEN }}
