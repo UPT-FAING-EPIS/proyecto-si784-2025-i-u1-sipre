@@ -21,9 +21,9 @@ jobs:
         with:
           php-version: '8.1' # Cambia si tu proyecto usa otra versión
 
-      - name: Install dependencies
-        working-directory: ./Markdown2Video
-        run: composer install --no-progress --prefer-dist
+    #   - name: Install dependencies
+    #     working-directory: ./Markdown2Video
+    #     run: composer install --no-progress --prefer-dist
 
       - name: Run SonarCloud scan
         working-directory: ./Markdown2Video
