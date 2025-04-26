@@ -24,20 +24,17 @@ jobs:
         php-version: ${{ env.PHP_VERSION }}
         extensions: mbstring, xml, curl  # Agregar las extensiones necesarias para tu proyecto
 
-    # - name: Install Composer
-    #   run: |
-    #     curl -sS https://getcomposer.org/installer | php
-    #     sudo mv composer.phar /usr/local/bin/composer
+    - name: Install Composer
+      run: |
+        curl -sS https://getcomposer.org/installer | php
+        sudo mv composer.phar /usr/local/bin/composer
 
-    # - name: Install Dependencies
-    #   run: composer install --no-dev --optimize-autoloader
+    - name: Install Dependencies
+      run: composer install --no-dev --optimize-autoloader
 
-    # - name: Install Dependencies
-    #   run: composer install --no-dev --optimize-autoloader
-
-    # - name: Run PHP Tests (si usas PHPUnit u otro framework de pruebas)
-    #   run: |
-    #     vendor/bin/phpunit --configuration phpunit.xml
+    - name: Run PHP Tests (si usas PHPUnit u otro framework de pruebas)
+      run: |
+        vendor/bin/phpunit --configuration phpunit.xml
 
     - name: Build Project (si necesitas compilar o procesar algún archivo, puedes agregar esta parte)
       run: |
