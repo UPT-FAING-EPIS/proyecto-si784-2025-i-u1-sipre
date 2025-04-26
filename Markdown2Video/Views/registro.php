@@ -1,24 +1,9 @@
-<?php
-session_start();
-
-// Verifica si hay un mensaje de error o éxito en la sesión
-if (isset($_SESSION['error'])) {
-    echo "<p style='color: red;'>".$_SESSION['error']."</p>";  // Muestra el mensaje de error
-    unset($_SESSION['error']);
-}
-
-if (isset($_SESSION['success'])) {
-    echo "<p style='color: green;'>".$_SESSION['success']."</p>";  // Muestra el mensaje de éxito
-    unset($_SESSION['success']);
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../public/css/login.css">
+    <link rel="stylesheet" href="../public/css/registro.css">
     <title>Login</title>
 </head>
 <body>
@@ -27,7 +12,7 @@ if (isset($_SESSION['success'])) {
             <form class="login-form" action="../../Controllers/AuthController.php" method="POST">
                 <input type="hidden" name="action" value="login">
                 <div class="input-group">
-                    <h2>LOGIN</h2>
+                    <h2>Registrate</h2>
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" placeholder="Email" required>
                 </div>
@@ -35,11 +20,10 @@ if (isset($_SESSION['success'])) {
                     <label for="password">Contraseña</label>
                     <input type="password" id="password" name="password" placeholder="Password" required>
                 </div>
-                <button type="submit">Login Now</button>
-                <a href="../../Views/registro.php">¿No tienes una cuenta? Registrate</a>
+                <button type="submit">Registrate Ahora</button>
+                <a href="../../Views/login.php">No tienes una cuenta? Registrate</a>
             </form>
         </div>
-        <img class="login-image" src="../../Assets/imagen/logo.png" alt="Login Image">
     </div>
 </body>
 </html>

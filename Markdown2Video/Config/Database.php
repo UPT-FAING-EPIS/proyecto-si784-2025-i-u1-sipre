@@ -1,10 +1,11 @@
 <?php
 
 class Database {
-    private $host = '';
-    private $db_name = '';
-    private $username = '';
+    private $host = 'localhost';
+    private $db_name = 'markdown2video';
+    private $username = 'root';
     private $password = '';
+    private $port = '3306';
     private $conn = null;
 
     public function connect() {
