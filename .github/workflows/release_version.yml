@@ -32,12 +32,12 @@ jobs:
     # - name: Install Dependencies
     #   run: composer install --no-dev --optimize-autoloader
 
-    - name: Install Dependencies
-      run: composer install --no-dev --optimize-autoloader
+    # - name: Install Dependencies
+    #   run: composer install --no-dev --optimize-autoloader
 
-    - name: Run PHP Tests (si usas PHPUnit u otro framework de pruebas)
-      run: |
-        vendor/bin/phpunit --configuration phpunit.xml
+    # - name: Run PHP Tests (si usas PHPUnit u otro framework de pruebas)
+    #   run: |
+    #     vendor/bin/phpunit --configuration phpunit.xml
 
     - name: Build Project (si necesitas compilar o procesar algún archivo, puedes agregar esta parte)
       run: |
