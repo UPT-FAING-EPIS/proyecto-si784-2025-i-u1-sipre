@@ -34,7 +34,7 @@ jobs:
           unzip sonar-scanner.zip
           ./sonar-scanner-*/bin/sonar-scanner \
             -Dsonar.projectKey=si784_markdown2video \
-            -Dsonar.organization=si78 \
+            -Dsonar.organization=si784 \
             -Dsonar.sources=. \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.php.coverage.reportPaths=coverage.xml \
