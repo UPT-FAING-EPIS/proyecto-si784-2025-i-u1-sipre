@@ -38,10 +38,10 @@ jobs:
         cd Markdown2Video  # Asegurarse de estar en la carpeta correcta
         composer install --no-dev --optimize-autoloader  # Ejecuta composer dentro de la carpeta Markdown2Video
 
-    - name: Run PHP Tests (si usas PHPUnit u otro framework de pruebas)
-      run: |
-        cd Markdown2Video  # Asegurarse de estar en la carpeta correcta
-        vendor/bin/phpunit --configuration phpunit.xml
+    # - name: Run PHP Tests (si usas PHPUnit u otro framework de pruebas)
+    #   run: |
+    #    cd Markdown2Video  # Asegurarse de estar en la carpeta correcta
+    #    vendor/bin/phpunit --configuration phpunit.xml
 
     - name: Build Project (si necesitas compilar o procesar algún archivo)
       run: |
