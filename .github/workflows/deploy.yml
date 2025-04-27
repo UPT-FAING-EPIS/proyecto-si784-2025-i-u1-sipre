@@ -47,7 +47,7 @@ jobs:
 
       - name: Generate Infracost cost estimate
         run: |
-          infracost breakdown --path infra --format markdown --out-file infracost-report.md
+          infracost breakdown --path infra --format table --out-file infracost-report.md
   
       - name: Commit Infracost report
         run: |
