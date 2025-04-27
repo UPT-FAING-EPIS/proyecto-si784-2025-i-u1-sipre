@@ -10,5 +10,5 @@ resource "aws_elastic_beanstalk_application" "php_app" {
 resource "aws_elastic_beanstalk_environment" "php_app_env" {
   name                = "my-php-app-env"
   application         = aws_elastic_beanstalk_application.php_app.name
-  solution_stack_name = "64bit Amazon Linux 2 v3.3.6 running PHP 7.4"
+  solution_stack_name = "64bit Amazon Linux 2 v4.6.1 running PHP 8.4"
 }
