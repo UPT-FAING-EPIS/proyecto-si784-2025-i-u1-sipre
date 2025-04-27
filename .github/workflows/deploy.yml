@@ -47,8 +47,16 @@ jobs:
 
       - name: Generate Infracost cost estimate
         run: |
-          infracost breakdown --path infra --format table
-
+          infracost breakdown --path infra --format markdown --out-file infracost-report.md
+  
+      - name: Commit Infracost report
+        run: |
+          git config user.name "nkmelndz"
+          git config user.email "nkmelndz@gmail.com"
+          git add infracost-report.md
+          git commit -m "chore: update infracost report" || echo "No changes to commit"
+          git push
+  
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve tfplan
