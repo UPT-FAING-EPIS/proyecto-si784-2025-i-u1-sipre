@@ -54,27 +54,26 @@ jobs:
         mkdir release
         zip -r release/project-${GITHUB_SHA}.zip .  # O el tipo de archivo que prefieras como release
 
-    - name: Create Git tag
-      run: |
-        cd Markdown2Video  # Asegurarse de estar en la carpeta correcta
-        VERSION=$(grep -oP '(?<=<version>)(.*?)(?=</version>)' composer.json)
-        echo "Current Version: $VERSION"
-
-        TAG="v${VERSION}"
-
-        # Verifica si el tag ya existe en el remoto
-        while git ls-remote --tags origin "$TAG" | grep -q "$TAG"; do
-          echo "Tag $TAG already exists. Incrementing version."
-          # Si el tag existe, incrementa la versión
-          VERSION_INCREMENTED=$(echo $VERSION | awk -F. -v OFS=. '{$NF++;print}')
-          TAG="v${VERSION_INCREMENTED}"
-          VERSION=$VERSION_INCREMENTED  # Actualiza la versión para seguir incrementando 
-          echo "New version with increment: $TAG"
-        done
-        echo "NAME=$TAG" >> $GITHUB_ENV
-        # Crear el nuevo tag
-        git tag $TAG
-        git push origin $TAG
+        - name: Create Git tag
+        run: |
+          cd Markdown2Video
+          VERSION=$(jq -r .version < composer.json)  # Ahora jq funcionará porque el campo version está presente
+          echo "Current Version: $VERSION"
+      
+          TAG="v${VERSION}"
+      
+          # Verifica si el tag ya existe en el remoto
+          while git ls-remote --tags origin "$TAG" | grep -q "$TAG"; do
+            echo "Tag $TAG already exists. Incrementing version."
+            VERSION_INCREMENTED=$(echo $VERSION | awk -F. -v OFS=. '{$NF++;print}')
+            TAG="v${VERSION_INCREMENTED}"
+            VERSION=$VERSION_INCREMENTED  # Actualiza la versión para seguir incrementando 
+            echo "New version with increment: $TAG"
+          done
+          echo "NAME=$TAG" >> $GITHUB_ENV
+          # Crear el nuevo tag
+          git tag $TAG
+          git push origin $TAG      
 
     - name: Publish Release
       uses: ncipollo/release-action@v1

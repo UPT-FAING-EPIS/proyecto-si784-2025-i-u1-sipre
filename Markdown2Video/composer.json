@@ -1,5 +1,6 @@
 {
     "name": "dales/markdown2video",
+    "version": "1.0.0",
     "description": "Conversor de markdown a video",
     "type": "project",
     "require-dev": {
