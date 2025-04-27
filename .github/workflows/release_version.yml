@@ -80,5 +80,6 @@ jobs:
       with:
         tag: ${{ env.NAME }}
         name: "Release ${{ env.NAME }}"
-        files: release/*.zip  # O el tipo de archivo que hayas creado
+        artifact: release/*.zip
         token: ${{ secrets.GH_TOKEN }}
+
