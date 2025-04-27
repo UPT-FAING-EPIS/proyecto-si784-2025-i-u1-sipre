@@ -54,14 +54,14 @@ jobs:
         mkdir release
         zip -r release/project-${GITHUB_SHA}.zip .  # O el tipo de archivo que prefieras como release
 
-        - name: Create Git tag
+        - name: Create Git tag  # Aquí la indentación es incorrecta
         run: |
           cd Markdown2Video
           VERSION=$(jq -r .version < composer.json)  # Ahora jq funcionará porque el campo version está presente
           echo "Current Version: $VERSION"
-      
+        
           TAG="v${VERSION}"
-      
+        
           # Verifica si el tag ya existe en el remoto
           while git ls-remote --tags origin "$TAG" | grep -q "$TAG"; do
             echo "Tag $TAG already exists. Incrementing version."
@@ -73,7 +73,8 @@ jobs:
           echo "NAME=$TAG" >> $GITHUB_ENV
           # Crear el nuevo tag
           git tag $TAG
-          git push origin $TAG      
+          git push origin $TAG
+    
 
     - name: Publish Release
       uses: ncipollo/release-action@v1
