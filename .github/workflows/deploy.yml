@@ -41,6 +41,9 @@ jobs:
         run: |
           curl -s https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
           infracost --version
+    
+      - name: Set Infracost API Key
+        run: echo "INFRACOST_API_KEY=${{ secrets.INFRACOST_API_KEY }}" >> $GITHUB_ENV
 
       - name: Generate Infracost cost estimate
         run: |
