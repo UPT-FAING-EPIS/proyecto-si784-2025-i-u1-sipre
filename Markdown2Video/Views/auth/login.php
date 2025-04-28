@@ -27,7 +27,7 @@ if (isset($_SESSION['success'])) {
             <form class="login-form" action="../../Controllers/AuthController.php" method="POST">
                 <input type="hidden" name="action" value="login">
                 <div class="input-group">
-                    <h2>LOGIN</h2>
+                    <h2>LOGINN</h2>
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" placeholder="Email" required>
                 </div>
