@@ -10,7 +10,7 @@ resource "aws_elastic_beanstalk_application" "php_app" {
 resource "aws_elastic_beanstalk_environment" "php_app_env" {
   name                = "markdown2video-env"
   application         = aws_elastic_beanstalk_application.php_app.name
-  solution_stack_name = "64bit Amazon Linux 2023 v4.6.1 running PHP 8.4"
+  solution_stack_name = "64bit Amazon Linux 2 v3.9.1 running PHP 8.1"
 }
 
 resource "aws_db_instance" "mysql_db" {
@@ -24,4 +24,19 @@ resource "aws_db_instance" "mysql_db" {
   password             = var.db_password
   publicly_accessible  = true
   skip_final_snapshot  = true
+
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "InstanceType"
+    value     = "t3.micro"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "ENVIRONMENT"
+    value     = "production"
+  }
 }
+
+
+  
