@@ -15,5 +15,5 @@ variable "db_username" {
 variable "db_password" {
   description = "Contraseña del RDS"
   sensitive   = true
-  default     = "Upt2025"  # Idealmente usar `terraform.tfvars` o `secrets` para esto
+  default     = "admin1234"  # Idealmente usar `terraform.tfvars` o `secrets` para esto
 }
