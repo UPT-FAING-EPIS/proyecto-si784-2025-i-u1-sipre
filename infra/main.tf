@@ -3,19 +3,19 @@ provider "aws" {
 }
 
 resource "aws_elastic_beanstalk_application" "php_app" {
-  name        = "markdown2video-app"
+  name        = "markdown2video_app"
   description = "PHP application deployed with Elastic Beanstalk"
 }
 
 resource "aws_elastic_beanstalk_environment" "php_app_env" {
-  name                = "markdown2video-env"
+  name                = "markdown2video_env"
   application         = aws_elastic_beanstalk_application.php_app.name
   solution_stack_name = "64bit Amazon Linux 2023 v4.6.1 running PHP 8.1"
 
   setting {
-    namespace = "aws:autoscaling:launchconfiguration"
-    name      = "InstanceType"
-    value     = "t3.micro"
+      namespace = "aws:autoscaling:launchconfiguration"
+      name      = "IamInstanceProfile"
+      value     = "aws-elasticbeanstalk-ec2-role"
   }
 
   setting {
