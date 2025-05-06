@@ -23,26 +23,6 @@ resource "aws_elastic_beanstalk_environment" "php_app_env" {
     name      = "ENVIRONMENT"
     value     = "production"
   }
-
-  # Add these critical settings
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "VPCId"
-    value     = "vpc-xxxxxx"  # Replace with your default VPC
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "Subnets"
-    value     = "subnet-xxxxxx,subnet-yyyyyy"  # Replace with 2+ subnets
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "ServiceRole"
-    value     = "aws-elasticbeanstalk-service-role" # Create this IAM role first
-  }
-
 }
 
 resource "aws_db_instance" "mysql_db" {
@@ -57,6 +37,3 @@ resource "aws_db_instance" "mysql_db" {
   publicly_accessible  = true
   skip_final_snapshot  = true
 }
-
-
-  
