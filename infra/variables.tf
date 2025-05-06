@@ -2,3 +2,18 @@ variable "aws_region" {
   description = "The AWS region to deploy resources"
   default     = "us-east-1"
 }
+variable "db_name" {
+  description = "Nombre de la base de datos"
+  default     = "markdown2video"
+}
+
+variable "db_username" {
+  description = "Usuario administrador del RDS"
+  default     = "admin"
+}
+
+variable "db_password" {
+  description = "Contraseña del RDS"
+  sensitive   = true
+  default     = "Upt2025"  # Idealmente usar `terraform.tfvars` o `secrets` para esto
+}

@@ -49,14 +49,11 @@ jobs:
         run: |
           infracost breakdown --path infra --format table --out-file infracost-report.md
   
-      - name: Commit Infracost report
+      - name: Show Infracost Report in Summary
         run: |
-          git config user.name "nkmelndz"
-          git config user.email "nkmelndz@gmail.com"
-          git add infracost-report.md
-          git commit -m "chore: update infracost report" || echo "No changes to commit"
-          git push
-  
+          echo "## Infracost Cost Estimate" >> $GITHUB_STEP_SUMMARY
+          cat infracost-report.md >> $GITHUB_STEP_SUMMARY
+
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve tfplan
