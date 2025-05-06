@@ -43,10 +43,6 @@ resource "aws_elastic_beanstalk_environment" "php_app_env" {
     value     = "aws-elasticbeanstalk-service-role" # Create this IAM role first
   }
 
-  timeouts {
-    create = "30m"
-    delete = "15m"
-  }
 }
 
 resource "aws_db_instance" "mysql_db" {
