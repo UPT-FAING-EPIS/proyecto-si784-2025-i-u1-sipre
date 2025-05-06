@@ -2,15 +2,10 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "aws_elastic_beanstalk_application" "php_app" {
-  name        = "markdown2video-app"
-  description = "PHP application deployed with Elastic Beanstalk"
-}
-
 resource "aws_elastic_beanstalk_environment" "php_app_env" {
   name                = "markdown2video-env"
   application         = aws_elastic_beanstalk_application.php_app.name
-  solution_stack_name = "64bit Amazon Linux 2 v3.9.1 running PHP 8.1"
+  solution_stack_name = "64bit Amazon Linux 2023 v4.3.0 running PHP 8.1"
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
@@ -24,6 +19,29 @@ resource "aws_elastic_beanstalk_environment" "php_app_env" {
     value     = "production"
   }
 
+  # Add these critical settings
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "VPCId"
+    value     = "vpc-xxxxxx"  # Replace with your default VPC
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "Subnets"
+    value     = "subnet-xxxxxx,subnet-yyyyyy"  # Replace with 2+ subnets
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "ServiceRole"
+    value     = "aws-elasticbeanstalk-service-role" # Create this IAM role first
+  }
+
+  timeouts {
+    create = "30m"
+    delete = "15m"
+  }
 }
 
 resource "aws_db_instance" "mysql_db" {
