@@ -12,16 +12,24 @@ resource "aws_elastic_beanstalk_environment" "php_app_env" {
   application         = aws_elastic_beanstalk_application.php_app.name
   solution_stack_name = "64bit Amazon Linux 2023 v4.6.1 running PHP 8.1"
 
+  # Habilitar entorno de instancia única (sin balanceador)
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "EnvironmentType"
+    value     = "SingleInstance"
+  }
+
+  # Especificar el tipo de instancia EC2
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "InstanceType"
+    value     = "t3.micro"
+  }
+
   setting {
       namespace = "aws:autoscaling:launchconfiguration"
       name      = "IamInstanceProfile"
       value     = "aws-elasticbeanstalk-ec2-role"
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "ENVIRONMENT"
-    value     = "production"
   }
 }
 
