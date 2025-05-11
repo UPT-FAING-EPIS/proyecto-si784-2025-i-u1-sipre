@@ -55,10 +55,14 @@ resource "aws_db_instance" "mysql_db" {
 
 resource "aws_s3_bucket" "app_bucket" {
   bucket = "markdown2video-files"  # Cambia por un nombre único a nivel global
-  acl    = "private"                # O "public-read" si necesitas acceso público
 
   tags = {
     Name        = "Markdown2VideoAppBucket"
     Environment = "production"
   }
+}
+
+resource "aws_s3_bucket_acl" "app_bucket_acl" {
+  bucket = aws_s3_bucket.app_bucket.id
+  acl    = "private"  
 }
