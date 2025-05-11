@@ -31,6 +31,12 @@ resource "aws_elastic_beanstalk_environment" "php_app_env" {
       name      = "IamInstanceProfile"
       value     = "aws-elasticbeanstalk-ec2-role"
   }
+
+  setting {
+  namespace = "aws:elasticbeanstalk:application:environment"
+  name      = "S3_BUCKET"
+  value     = aws_s3_bucket.app_bucket.bucket
+  }
 }
 
 resource "aws_db_instance" "mysql_db" {
@@ -44,4 +50,15 @@ resource "aws_db_instance" "mysql_db" {
   password             = var.db_password
   publicly_accessible  = true
   skip_final_snapshot  = true
+}
+
+
+resource "aws_s3_bucket" "app_bucket" {
+  bucket = "markdown2video-files"  # Cambia por un nombre único a nivel global
+  acl    = "private"                # O "public-read" si necesitas acceso público
+
+  tags = {
+    Name        = "Markdown2VideoAppBucket"
+    Environment = "production"
+  }
 }
