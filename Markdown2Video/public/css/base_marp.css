@@ -1,0 +1,130 @@
+/* public/css/base_marp.css */
+
+/* Estilos generales heredados o que podrían estar en un main.css */
+/* body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; } */
+
+/* Contenedor principal de la página del editor Marp */
+.marp-editor-page-container { /* Renombrado de .container para evitar conflictos si .container es muy genérico */
+    display: flex;
+    /* height: calc(100vh - 60px); /* Asumiendo que el header tiene ~60px de alto, ajustar si es necesario */
+    /* Esto es mejor manejarlo con flexbox en el body o un wrapper principal si el header está fuera */
+    height: 100vh; /* Si el header se vuelve parte del flex o es fixed/sticky */
+    padding-top: 60px; /* Espacio para un header fixed/absolute, o eliminar si el header es parte del flujo */
+    box-sizing: border-box;
+}
+
+.editor-container, .preview-container {
+    flex: 1; /* Dividir el espacio equitativamente */
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    overflow: hidden; /* Para que los hijos con overflow:auto funcionen bien */
+    box-sizing: border-box;
+}
+
+.editor-container {
+    border-right: 2px solid #e0e0e0;
+}
+
+.editor-header, .preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.editor-header h2, .preview-header h2 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.mode-selector {
+  font-size: 0.9em;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+.editor-body, .preview-body {
+  flex: 1; /* Ocupar el espacio restante */
+  overflow: auto; /* Scroll si el contenido es más grande */
+  position: relative; /* Para CodeMirror */
+}
+
+/* Estilos específicos para CodeMirror */
+.CodeMirror {
+    height: 100% !important; /* Forzar altura completa dentro de .editor-body */
+    /* Ajusta la altura si es necesario, o usa flexbox para que se expanda */
+    /* min-height: 300px; /* O una altura mínima */
+    font-family: monospace;
+    font-size: 15px; /* Ligeramente más pequeño para más código visible */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#ppt-preview {
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    min-height: 100%; /* Ocupar altura del .preview-body */
+    box-sizing: border-box;
+    padding: 15px;
+    line-height: 1.6;
+    overflow-y: auto;
+    display: flex; /* Para centrar contenido o manejar slides */
+    flex-direction: column; /* O row si es un carrusel de slides */
+    color: #333;
+}
+
+/* Estilos para el contenido renderizado de Marp (ejemplo) */
+#ppt-preview h1, #ppt-preview h2, #ppt-preview h3 {
+    color: #2c3e50;
+}
+#ppt-preview p {
+    margin-bottom: 1em;
+}
+#ppt-preview ul, #ppt-preview ol {
+    margin-left: 20px;
+    margin-bottom: 1em;
+}
+#ppt-preview code {
+    background-color: #f0f0f0;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+#ppt-preview pre > code {
+    display: block;
+    padding: 10px;
+}
+
+
+.button-container {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-wrap: wrap; /* Para que los botones se ajusten en pantallas pequeñas */
+  gap: 10px; /* Espacio entre botones */
+  justify-content: center; /* Centrar botones si hay espacio extra */
+}
+
+.generate-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.generate-btn:hover {
+  background-color: #0056b3;
+}
+.generate-btn:active {
+  background-color: #004085;
+}
