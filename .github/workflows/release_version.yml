@@ -82,4 +82,38 @@ jobs:
         name: "Release ${{ env.NAME }}"
         artifact: release/*.zip
         token: ${{ secrets.GH_TOKEN }}
+        
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Upload app to S3
+      run: |
+        S3_BUCKET="elasticbeanstalk-${{ secrets.AWS_REGION }}-$(aws sts get-caller-identity --query Account --output text)"
+        ZIP_FILE="Markdown2Video/release/project-${GITHUB_SHA}.zip"
+        S3_KEY="releases/project-${GITHUB_SHA}.zip"
+        aws s3 cp "$ZIP_FILE" "s3://$S3_BUCKET/$S3_KEY"
+
+    - name: Create new Elastic Beanstalk application version
+      run: |
+        VERSION_LABEL="v-${{ github.run_number }}-${{ github.sha }}"
+        S3_BUCKET="elasticbeanstalk-${{ secrets.AWS_REGION }}-$(aws sts get-caller-identity --query Account --output text)"
+        S3_KEY="releases/project-${GITHUB_SHA}.zip"
+
+        aws elasticbeanstalk create-application-version \
+          --application-name "${{ secrets.EB_APP_NAME }}" \
+          --version-label "$VERSION_LABEL" \
+          --source-bundle S3Bucket=$S3_BUCKET,S3Key=$S3_KEY \
+          --auto-create-application
+
+    - name: Deploy new version to environment
+      run: |
+        VERSION_LABEL="v-${{ github.run_number }}-${{ github.sha }}"
+
+        aws elasticbeanstalk update-environment \
+          --environment-name "${{ secrets.EB_ENV_NAME }}" \
+          --version-label "$VERSION_LABEL"
 
