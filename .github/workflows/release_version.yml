@@ -94,7 +94,7 @@ jobs:
       run: |
         S3_BUCKET="elasticbeanstalk-${{ secrets.AWS_REGION }}-$(aws sts get-caller-identity --query Account --output text)"
         ZIP_FILE="Markdown2Video/release/project-${GITHUB_SHA}.zip"
-        S3_KEY="releases/project-${GITHUB_SHA}.zip"
+        S3_KEY="releases/Markdown2Video/project-${GITHUB_SHA}.zip"
         aws s3 cp "$ZIP_FILE" "s3://$S3_BUCKET/$S3_KEY"
 
     - name: Create new Elastic Beanstalk application version
