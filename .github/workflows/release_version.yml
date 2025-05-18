@@ -7,11 +7,11 @@ env:
 on:
   push:
     branches:
-      - main
+      - main  # Puedes configurar para que solo se ejecute al hacer push a la rama principal (o la que prefieras)
 
 jobs:
   release:
-    name: Build and Deploy to Elastic Beanstalk
+    name: Build and Release Package
     runs-on: ubuntu-latest
 
     steps:
@@ -22,48 +22,67 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ env.PHP_VERSION }}
-        extensions: mbstring, xml, curl
+        extensions: mbstring, xml, curl  # Agregar las extensiones necesarias para tu proyecto
 
     - name: Install Composer
       run: |
         curl -sS https://getcomposer.org/installer | php
         sudo mv composer.phar /usr/local/bin/composer
 
-    - name: Install dependencies
+    # Cambiar el directorio a Markdown2Video
+    - name: Navigate to Markdown2Video directory
+      run: cd Markdown2Video  # Cambia el directorio a Markdown2Video
+
+    - name: Install Dependencies
+      run: |
+        cd Markdown2Video  # Asegurarse de estar en la carpeta correcta
+        composer install --no-dev --optimize-autoloader  # Ejecuta composer dentro de la carpeta Markdown2Video
+
+    # - name: Run PHP Tests (si usas PHPUnit u otro framework de pruebas)
+    #   run: |
+    #    cd Markdown2Video  # Asegurarse de estar en la carpeta correcta
+    #    vendor/bin/phpunit --configuration phpunit.xml
+
+    - name: Build Project (si necesitas compilar o procesar algún archivo)
+      run: |
+        cd Markdown2Video  # Asegurarse de estar en la carpeta correcta
+        echo "Building PHP project..."
+
+    - name: Create Release Package
+      run: |
+        cd Markdown2Video  # Asegurarse de estar en la carpeta correcta
+        mkdir release
+        zip -r release/project-${GITHUB_SHA}.zip .  # O el tipo de archivo que prefieras como release
+
+    - name: Create Git tag  # Este paso debe estar alineado correctamente
       run: |
         cd Markdown2Video
-        composer install --no-dev --optimize-autoloader
-
-    - name: Build release package
-      run: |
-        mkdir -p release
-        # Empaquetar toda la carpeta Markdown2Video (no solo su contenido)
-        zip -r release/project-${GITHUB_SHA}.zip Markdown2Video
-
-    - name: Create Git tag
-      run: |
-        cd Markdown2Video
-        VERSION=$(jq -r .version < composer.json)
+        VERSION=$(jq -r .version < composer.json)  # Ahora jq funcionará porque el campo version está presente
+        echo "Current Version: $VERSION"
+    
         TAG="v${VERSION}"
-
-        # Si el tag ya existe, incrementa la versión
+    
+        # Verifica si el tag ya existe en el remoto
         while git ls-remote --tags origin "$TAG" | grep -q "$TAG"; do
-          VERSION=$(echo $VERSION | awk -F. -v OFS=. '{$NF++; print}')
-          TAG="v${VERSION}"
+          echo "Tag $TAG already exists. Incrementing version."
+          VERSION_INCREMENTED=$(echo $VERSION | awk -F. -v OFS=. '{$NF++;print}')
+          TAG="v${VERSION_INCREMENTED}"
+          VERSION=$VERSION_INCREMENTED  # Actualiza la versión para seguir incrementando 
+          echo "New version with increment: $TAG"
         done
-
         echo "NAME=$TAG" >> $GITHUB_ENV
+        # Crear el nuevo tag
         git tag $TAG
         git push origin $TAG
 
-    - name: Publish GitHub Release
+    - name: Publish Release
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ env.NAME }}
         name: "Release ${{ env.NAME }}"
         artifact: release/*.zip
         token: ${{ secrets.GH_TOKEN }}
-
+        
     - name: Set up AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -71,14 +90,14 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Upload to S3
+    - name: Upload app to S3
       run: |
         S3_BUCKET="elasticbeanstalk-${{ secrets.AWS_REGION }}-$(aws sts get-caller-identity --query Account --output text)"
-        ZIP_FILE="release/project-${GITHUB_SHA}.zip"
+        ZIP_FILE="Markdown2Video/release/project-${GITHUB_SHA}.zip"
         S3_KEY="releases/project-${GITHUB_SHA}.zip"
         aws s3 cp "$ZIP_FILE" "s3://$S3_BUCKET/$S3_KEY"
 
-    - name: Create Elastic Beanstalk application version
+    - name: Create new Elastic Beanstalk application version
       run: |
         VERSION_LABEL="v-${{ github.run_number }}-${{ github.sha }}"
         S3_BUCKET="elasticbeanstalk-${{ secrets.AWS_REGION }}-$(aws sts get-caller-identity --query Account --output text)"
@@ -90,7 +109,7 @@ jobs:
           --source-bundle S3Bucket=$S3_BUCKET,S3Key=$S3_KEY \
           --auto-create-application
 
-    - name: Deploy new version to Elastic Beanstalk
+    - name: Deploy new version to environment
       run: |
         VERSION_LABEL="v-${{ github.run_number }}-${{ github.sha }}"
 
