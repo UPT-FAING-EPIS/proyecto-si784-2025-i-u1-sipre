@@ -1,8 +1,15 @@
 <?php
 // --- Views/base_markdown.php ---
 $base_url = $base_url ?? ''; // Pasada por MarkdownController->create()
-$pageTitle = $pageTitle ?? 'Editor Markdown'; // Pasada por MarkdownController->create()
-$csrf_token = $csrf_token ?? ''; // Pasada por MarkdownController->create()
+$pageTitle = $pageTitle ?? 'Editor Markdown';
+$csrf_token_editor = $csrf_token_editor ?? ''; // Específico para este editor si es necesario
+
+// Definir variables globales de JavaScript ANTES de incluir el script externo
+echo "<script>\n";
+echo "  window.BASE_APP_URL = " . json_encode($base_url) . ";\n";
+// Si necesitas el token CSRF para alguna acción AJAX desde base_markdown.js:
+// echo "  window.CSRF_TOKEN_EDITOR = " . json_encode($csrf_token_editor) . ";\n";
+echo "</script>\n";
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -22,7 +29,7 @@ $csrf_token = $csrf_token ?? ''; // Pasada por MarkdownController->create()
     <div class="editor-container">
       <div class="editor-header">
         <h2>Editor</h2>
-        <select id="mode-select" class="mode-selector">
+        <select id="mode-select" class="mode-selector"> <!-- ID para el editor Markdown -->
           <option value="markdown" selected>Markdown Estándar</option>
           <option value="marp">Marp</option>
         </select>
@@ -43,41 +50,10 @@ $csrf_token = $csrf_token ?? ''; // Pasada por MarkdownController->create()
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.4/codemirror.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.4/mode/markdown/markdown.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.4/addon/display/lineNumbers.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.4/addon/edit/continuelist.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.4/addon/display/placeholder.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="<?php echo htmlspecialchars($base_url, ENT_QUOTES, 'UTF-8'); ?>/public/js/base_markdown.js"></script>
   
-  <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var editorInstance = CodeMirror.fromTextArea(document.getElementById('editor'), {
-      lineNumbers: true, mode: "markdown", theme: "dracula", lineWrapping: true, matchBrackets: true,
-      extraKeys: { "Enter": function(cm) { cm.execCommand("newlineAndIndentContinueMarkdownList"); } }
-    });
-    editorInstance.setSize(null, "calc(100vh - 250px)");
-
-    const previewDiv = document.getElementById('ppt-preview');
-    const modeSelect = document.getElementById('mode-select');
-    const baseUrlJs = "<?php echo htmlspecialchars($base_url ?? '', ENT_QUOTES, 'UTF-8'); ?>"; // $base_url es pasada por el controlador
-
-    function updateMarkdownPreview() {
-      if (typeof marked !== 'undefined' && editorInstance && previewDiv) {
-        previewDiv.innerHTML = marked.parse(editorInstance.getValue());
-      }
-    }
-    if (editorInstance) { editorInstance.on("change", updateMarkdownPreview); updateMarkdownPreview(); }
-
-    if (modeSelect) {
-      modeSelect.addEventListener("change", function () {
-        const selectedMode = this.value;
-        if (selectedMode === "marp") {
-          window.location.href = baseUrlJs + '/markdown/marp-editor'; // URL Limpia
-        } else if (selectedMode === "markdown") {
-          // Ya estamos aquí, o podrías redirigir a /markdown/create si es necesario
-          console.log("Modo Markdown ya seleccionado.");
-        }
-      });
-    }
-  });
-</script>
+  <script src="<?php echo htmlspecialchars($base_url, ENT_QUOTES, 'UTF-8'); ?>/public/js/base_markdown.js"></script>
 </body>
 </html>

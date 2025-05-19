@@ -34,3 +34,7 @@ Stack trace:
 Stack trace:
 #0 C:\xampp\htdocs\Markdown2Video\index.php(98): Dales\Markdown2video\Controllers\AuthController->showRegisterForm()
 #1 {main}
+[2025-05-19 03:18:18] Error: Typed property Dales\Markdown2video\Config\Database::$port must not be accessed before initialization in C:\xampp\htdocs\Markdown2Video\src\Config\Database.php on line 66
+Stack trace:
+#0 C:\xampp\htdocs\Markdown2Video\index.php(89): Dales\Markdown2video\Config\Database->getConnection()
+#1 {main}
