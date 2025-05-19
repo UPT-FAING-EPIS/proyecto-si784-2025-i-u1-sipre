@@ -1,73 +1,53 @@
 // public/js/base_marp.js
 
 document.addEventListener('DOMContentLoaded', function() {
-    const editorTextareaMarp = document.getElementById('editor-marp');         // ID del textarea en base_marp.php
-    const previewDivMarp = document.getElementById('ppt-preview');             // ID del div de previsualización
-    const modeSelectMarp = document.getElementById('mode-select-marp-page'); // ID del select en base_marp.php
+    const editorTextareaMarp = document.getElementById('editor-marp');
+    const previewDivMarp = document.getElementById('ppt-preview');
+    const modeSelectMarp = document.getElementById('mode-select-marp-page');
     
-    // Obtener BASE_URL de la variable global definida en la vista PHP (Views/base_marp.php)
     const baseUrl = typeof window.BASE_APP_URL !== 'undefined' ? window.BASE_APP_URL : '';
     if (baseUrl === '') {
-        console.warn("ADVERTENCIA: window.BASE_APP_URL no está definida en el HTML. Las funcionalidades podrían fallar.");
+        console.warn("ADVERTENCIA: window.BASE_APP_URL no está definida. Funcionalidades pueden fallar.");
     }
-
-    // Obtener el token CSRF si se definió para el endpoint API
     // const csrfTokenMarpEditor = typeof window.CSRF_TOKEN_MARP_EDITOR !== 'undefined' ? window.CSRF_TOKEN_MARP_EDITOR : '';
 
-
-    let marpDebounceTimer; // Timer para el debounce de la actualización de la previsualización
+    let marpDebounceTimer;
 
     if (!editorTextareaMarp) {
-        console.error("Textarea con ID 'editor-marp' no encontrado. El editor Marp no se inicializará.");
-        return;
+        console.error("Textarea #editor-marp no encontrado. Editor Marp no se inicializará.");
+        return; 
     }
 
-    // Inicializar CodeMirror para el editor Marp
     const marpCodeMirrorEditor = CodeMirror.fromTextArea(editorTextareaMarp, {
-        mode: 'markdown',        // Marp usa sintaxis Markdown
+        mode: 'markdown',
         theme: 'dracula',
         lineNumbers: true,
         lineWrapping: true,
         matchBrackets: true,
         placeholder: editorTextareaMarp.getAttribute('placeholder') || "Escribe tu presentación Marp aquí...",
-        extraKeys: {
-            "Enter": "newlineAndIndentContinueMarkdownList"
-        }
+        extraKeys: { "Enter": "newlineAndIndentContinueMarkdownList" }
     });
 
     function refreshMarpEditorLayout() {
         if (marpCodeMirrorEditor) {
-            marpCodeMirrorEditor.setSize('100%', '100%'); // Asume que .editor-body tiene altura flexible
+            marpCodeMirrorEditor.setSize('100%', '100%');
             marpCodeMirrorEditor.refresh();
         }
     }
     setTimeout(refreshMarpEditorLayout, 50);
 
-    /**
-     * Función asíncrona para actualizar la vista previa de Marp.
-     * Envía el contenido Markdown al endpoint del backend para ser renderizado.
-     */
     async function updateMarpPreview() {
         if (!previewDivMarp || !marpCodeMirrorEditor) return;
-
         const markdownText = marpCodeMirrorEditor.getValue();
         previewDivMarp.innerHTML = '<p>Generando vista previa Marp...</p>';
 
         try {
-            const renderEndpoint = baseUrl + '/markdown/render-marp-preview'; // URL limpia a tu API
+            const renderEndpoint = baseUrl + '/markdown/render-marp-preview';
             const requestBody = `markdown=${encodeURIComponent(markdownText)}`;
-            
-            // Preparar cabeceras
             const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
-            // if (csrfTokenMarpEditor) { // Añadir token CSRF si existe y es necesario para el endpoint POST
-            //     headers['X-CSRF-TOKEN'] = csrfTokenMarpEditor;
-            // }
+            // if (csrfTokenMarpEditor) { headers['X-CSRF-TOKEN'] = csrfTokenMarpEditor; }
 
-            const response = await fetch(renderEndpoint, {
-                method: 'POST',
-                headers: headers,
-                body: requestBody
-            });
+            const response = await fetch(renderEndpoint, { method: 'POST', headers: headers, body: requestBody });
 
             if (!response.ok) {
                 let errorDetail = await response.text();
@@ -79,9 +59,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const htmlResult = await response.text();
-            // ¡IMPORTANTE! Confías en que el HTML de Marp es seguro.
-            // Considera DOMPurify si el Markdown original no es de confianza.
-            previewDivMarp.innerHTML = htmlResult;
+            
+            // --- INICIO DE LA CORRECCIÓN CON DOMPURIFY ---
+            if (typeof DOMPurify !== 'undefined') {
+                // Sanear el HTML antes de insertarlo
+                // Configuración básica: permite HTML estándar.
+                // Puedes necesitar configuraciones más específicas para Marp si elimina cosas importantes.
+                const cleanHtml = DOMPurify.sanitize(htmlResult, { 
+                    USE_PROFILES: { html: true },
+                    // Ejemplo de configuración más permisiva si es necesario para Marp (¡USA CON PRECAUCIÓN!):
+                    // ADD_TAGS: ['section', 'svg', 'foreignObject', 'style'], // Añade etiquetas que Marp usa
+                    // ADD_ATTR: ['data-marpit-slide-index', 'data-line', 'viewBox'] // Añade atributos que Marp usa
+                    // Investiga qué etiquetas/atributos específicos usa Marp y DOMPurify podría estar quitando.
+                });
+                previewDivMarp.innerHTML = cleanHtml;
+            } else {
+                // Fallback si DOMPurify no está cargado (menos seguro, como antes)
+                console.warn("DOMPurify no está cargado. El HTML de la previsualización se inserta sin saneamiento adicional del lado del cliente.");
+                previewDivMarp.innerHTML = htmlResult;
+            }
+            // --- FIN DE LA CORRECCIÓN CON DOMPURIFY ---
 
         } catch (error) {
             console.error("Error al generar vista previa Marp:", error);
@@ -98,24 +95,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (marpCodeMirrorEditor) {
         marpCodeMirrorEditor.on('change', () => {
             clearTimeout(marpDebounceTimer);
-            marpDebounceTimer = setTimeout(updateMarpPreview, 700); // Debounce
+            marpDebounceTimer = setTimeout(updateMarpPreview, 700);
         });
     }
 
-    // Manejador para el combobox de modo en la página de Marp
     if (modeSelectMarp) {
         modeSelectMarp.addEventListener('change', function () {
             const selectedMode = this.value;
             if (selectedMode === 'markdown') {
-                if (baseUrl) {
-                    window.location.href = baseUrl + '/markdown/create'; // URL limpia al editor Markdown
-                } else { console.error("BASE_URL no configurada en JS (Marp)."); alert("Error de config.");}
+                if (baseUrl) { window.location.href = baseUrl + '/markdown/create'; }
+                else { console.error("BASE_URL no configurada (Marp)."); alert("Error de config.");}
             } else if (selectedMode === 'marp') {
                 console.log("Modo Marp ya seleccionado.");
             }
         });
     }
-
-    // Actualización inicial de la previsualización al cargar
     setTimeout(updateMarpPreview, 100); 
 });
